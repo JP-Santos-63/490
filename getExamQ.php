@@ -1,23 +1,47 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
-//Author:   Joao P. Santos
 
-$curl = curl_init();
-$inData = file_get_contents('php://input');
+$host = "sql1.njit.edu";
+$user = "tpp26";
+$dbPassword = "hp8pCxxm";
+$db = "tpp26";
 
-//$question = $inData[1];
-//print_r($question);
-curl_setopt_array($curl, array(
-    CURLOPT_URL => "https://web.njit.edu/~tpp26/getExamQ.php",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "POST",
-    CURLOPT_POSTFIELDS => $inData,
-    CURLOPT_HTTPHEADER => array(
-        "Content-Type: application/x-www-form-urlencoded",
-    ),
-));
+$name=$_POST["name"];
+$id=$_POST["id"];
 
-$response = curl_exec($curl);
-echo $response;
+$conn = mysqli_connect($host, $user, $dbPassword, $db);
+
+if (!$conn) {
+    echo "Error: Unable to connect to MySQL." . PHP_EOL;
+    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
+    echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
+    exit;
+}
+
+//echo 'Connected to the database.';
+
+$result = mysqli_query($conn, "SELECT * FROM exam WHERE id = '$id' AND name = '$name'");
+$items;
+while ($row = mysqli_fetch_row($result)) {
+    $items=array('name'=>$row[0], 'id'=>$row[1], 'question'=>$row[2], 'description'=>$row[3], 'args'=>explode(' ',$row[4]), 'tests'=>explode(' ',$row[5]), 'points'=>$row[6], 'answer'=>$row[7], 'grade'=>$row[8]);
+}
+if($items!=NULL){
+  echo json_encode($items);
+}
+else{
+  $stuff->Operation = "fail";
+  $stuffJson = json_encode($stuff);
+  echo $stuffJson;
+}
+
+
+//$stuffJson = json_encode($items);
+//echo $stuffJson;
+
+//$ayy = json_decode($stuffJson, true);
+//print_r($ayy);
+
+$conn->close();
+
+?>

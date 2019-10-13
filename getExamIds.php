@@ -8,9 +8,6 @@ $dbPassword = "hp8pCxxm";
 $db = "tpp26";
 
 $name=$_POST["name"];
-$id=$_POST["id"];
-$grade=$_POST["grade"];
-
 $conn = mysqli_connect($host, $user, $dbPassword, $db);
 
 if (!$conn) {
@@ -20,20 +17,22 @@ if (!$conn) {
     exit;
 }
 
-$sql="UPDATE exam SET grade = '$grade' WHERE id = '$id' AND name = '$name'";
-$query = $conn->query($sql);
+//echo 'Connected to the database.';
 
-if($query){
-  $stuff->Operation = "success";
-  $stuffJson = json_encode($stuff);
-  echo $stuffJson;
-}
-else{
-  $stuff->Operation = "fail";
-  $stuffJson = json_encode($stuff);
-  echo $stuffJson;
+$result = mysqli_query($conn, "SELECT * FROM exam WHERE name = '$name'");
+
+$items=[];
+while ($row = mysqli_fetch_row($result)) {  
+        $items[]=$row[1];
 }
 
+echo json_encode($items);
+
+//$stuffJson = json_encode($items);
+//echo $stuffJson;
+
+//$ayy = json_decode($stuffJson, true);
+//print_r($ayy);
 
 $conn->close();
 

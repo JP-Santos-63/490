@@ -1,61 +1,62 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
-//Author:   Joao P. Santos
 
-//$jsonData = json_decode(file_get_contents('php://input'), true);
-//BREAKING QUESTION
-$inData = file_get_contents('php://input');
-/*$inData = explode("&", $inData);
-$question = explode("=", $inData[0]); // the question being retrieved
-//BREAKING DESCRIPTION
-$desc = $inData[1];
-$desc = explode("=", $inData[1]);
-//BREAKING DIFFICULTY
-$diff = explode("=", $inData[2]);
-//print_r($diff[1]);
-//BREAKING CATEGORY
-$cat = explode("=", $inData[3]);
-//$arg1 = ;
-//$test1 = ;
-//$arg2 = ;
-//$test = ;
-//echo $jsonData[1];
-//$newUser = explode("&", $jsonData);
-//echo substr($jsonData[1], 0, -9);
+$host = "sql1.njit.edu";
+$user = "tpp26";
+$dbPassword = "hp8pCxxm";
+$db = "tpp26";
 
-//QUESTION
-$question = $question[1]; // the question being retrieved
-$questionA = str_replace("%28", "(", $question); //step 1
-$questionB = str_replace("%29", ")", $questionA); //step 2
+$q=$_POST["question"];
+$desc=$_POST["description"];
+$dif=$_POST["difficulty"];
+$cat=$_POST["category"];   
 
-//DESCRIPTION
-$desc = str_replace("%20", " ", $desc[1]);
+$conn = mysqli_connect($host, $user, $dbPassword, $db);
 
-//DIFFICULTY
-$diff = $diff[1];
+if (!$conn) {
+    echo "Error: Unable to connect to MySQL." . PHP_EOL;
+    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
+    echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
+    exit;
+}
 
-//CATEGORY
-$cat = $cat[1];
+//if (isset($_POST["arg2"]) && !empty($_POST["arg2"])){
+$sql="INSERT INTO `tpp26`.`questions` (`id`, `question`, `description`, `difficulty`, `category`) VALUES (NULL, '$q', '$desc', '$dif', '$cat')";
+$query = $conn->query($sql);
 
-//$arg1 = ;
-//$test1 = ;
-//$arg2 = ;
-//$test = ;
- */
-$curl = curl_init();
-curl_setopt_array($curl, array(
-    CURLOPT_URL => "https://web.njit.edu/~tpp26/addQ.php",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "POST",
-    CURLOPT_POSTFIELDS => $inData,
-    CURLOPT_HTTPHEADER => array(
-        "Content-Type: application/x-www-form-urlencoded",
-    ),
-));
+if($query){
+  $stuff->Operation = "success";
+  $stuffJson = json_encode($stuff);
+  echo $stuffJson;
+}
+else{
+  $stuff->Operation = "fail";
+  $stuffJson = json_encode($stuff);
+  echo $stuffJson;
+}
+//$sql="UPDATE questions SET arg2 = NULL WHERE arg2 = ''";
+//$query = $conn->query($sql);
+//$sql="UPDATE questions SET test2 = NULL WHERE test2 = ''";
+//$query = $conn->query($sql);
+//}
+//else{
+  //$sql="INSERT INTO `tpp26`.`questions` (`id`, `question`, `description`, `difficulty`, `category`, `arg1`, `test1`, `arg2`, `test2`) VALUES (NULL, '$q', '$desc', '$dif', '$cat', '$arg1', '$test1', NULL, NULL)";
+  //$query = $conn->query($sql);
+  //if($query){
+	 // echo "Add question is done successfuly";
+  //}
+  //else{
+  //  echo "Notice: add question is failed";
+ // }
+//}
 
-$response = curl_exec($curl);
-curl_close($curl);
+//$stuffJson = json_encode($items);
+//echo $stuffJson;
 
-echo $response;
+//$ayy = json_decode($stuffJson, true);
+//print_r($ayy);
+
+$conn->close();
+
+?>

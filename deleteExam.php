@@ -7,7 +7,6 @@ $user = "tpp26";
 $dbPassword = "hp8pCxxm";
 $db = "tpp26";
 
-$name=$_POST["name"];
 $id=$_POST["id"];
 $grade=$_POST["grade"];
 
@@ -20,7 +19,7 @@ if (!$conn) {
     exit;
 }
 
-$sql="UPDATE exam SET grade = '$grade' WHERE id = '$id' AND name = '$name'";
+$sql="TRUNCATE TABLE `exam`";
 $query = $conn->query($sql);
 
 if($query){
